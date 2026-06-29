@@ -2,7 +2,7 @@
 
 typedef unsigned int UINT;
 
-//Position 4
+//Position Dynamic
 UINT OffBit(UINT iNo,UINT iPos){
     UINT iMask = 0xFFFFFFF7;
     UINT iResult = 0;
