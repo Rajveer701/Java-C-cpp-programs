@@ -13,9 +13,6 @@ UINT ToggleBit(UINT iNo,UINT iPos1,UINT iPos2){
 
     iMask1 = iMask1 << (iPos1 - 1);
     iMask2 = iMask2 << (iPos2 - 1);
-
-    iMask = iMask1 | iMask2;
-
     iResult = iNo ^ iMask;
 
     return iResult;
