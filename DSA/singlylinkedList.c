@@ -72,7 +72,7 @@ void InsertAtPos(PPNODE first,int iNo,int iPos){
     PNODE temp = NULL;
     int i = 0;
 
-    if( (iPos < 1) || (iPos > iCount+1) ){
+    if( (iPos < 1) || (iPos > iCount) ){
         printf("Invalid Position");
         return;
     }

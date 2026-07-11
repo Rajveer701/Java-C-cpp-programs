@@ -11,120 +11,128 @@ struct node{
 typedef struct node NODE;
 typedef struct node * PNODE;
 
-class SinglyLL{
-    //Abstraction
+class singlyCL{
     private:
         PNODE first;
-        int iCount;
-
+        PNODE last;
+        int iCount = 0;
     public:
-        SinglyLL();
+        singlyCL();
+        
         void Display();
         int Count();
+
         void InsertFirst(int iNo);
         void InsertLast(int iNo);
         void InsertAtPos(int iNo,int iPos);
+
         void DeleteFirst();
         void DeleteLast();
         void DeleteAtPos(int iPos);
 };
 
-SinglyLL::SinglyLL(){
+singlyCL::singlyCL(){
     this->first = NULL;
+    this->last = NULL;
     this->iCount = 0;
 }
 
-void SinglyLL::Display(){
+void singlyCL::Display(){
     PNODE temp = NULL;
-    temp = this->first;
-    
-    while(temp!=NULL){
+    if(first == NULL && last == NULL){
+        return;
+    }
+    temp = first;
+    do{
         cout<<"| "<<temp->data<<" | -> ";
         temp = temp->next;
-    }
-    cout<<"NULL"<<endl;
+    }while(last->next != temp);
+    cout<<"\n";
 }
 
-int SinglyLL::Count(){
+int singlyCL::Count(){
     return this->iCount;
 }
 
-void SinglyLL::InsertFirst(int iNo){
+void singlyCL::InsertFirst(int iNo){
     PNODE newn = NULL;
     newn = new NODE;
     newn->data = iNo;
     newn->next = NULL;
 
-    if(NULL == this->first){
-        this->first = newn;
+    if(first == NULL && last == NULL){
+        first = newn;
+        last = newn; 
     }
     else{
-       newn->next = this->first;
-       this->first = newn;
+        newn->next = first;
+        first = newn;
+        last->next = first;
     }
-    this->iCount++;     //imp
+    iCount++;
 }
 
-void SinglyLL::InsertLast(int iNo){
-    PNODE newn = NULL;
+void singlyCL::InsertLast(int iNo){
+     PNODE newn = NULL;
+    newn = new NODE;
+    newn->data = iNo;
+    newn->next = NULL;
+
+    if(first == NULL && last == NULL){
+        first = newn;
+        last = newn; 
+    }
+    else{
+       last->next = newn;
+       last = newn;
+       last->next = first;
+    }
+    iCount++;
+}
+
+void singlyCL::InsertAtPos(int iNo,int iPos){
     PNODE temp = NULL;
-    newn = new NODE;
-    newn->data = iNo;
-    newn->next = NULL;
-
-    if(NULL == this->first){
-        this->first = newn;
-    }
-    else{
-        temp = this->first;
-        while(temp->next!=NULL){
-            temp = temp->next;
-        }
-        temp->next = newn;
-    }
-    this->iCount++; 
-}
-
-void SinglyLL::InsertAtPos(int iNo,int iPos){
+    PNODE newn = NULL;
     int i = 0;
-    PNODE temp = NULL;
-    PNODE newn = NULL;
-    
-    if((iPos<1) || (iPos>iCount+1)){
-        cout<<"Invalid Position\n";
+
+    if((iPos<1) && (iPos>iCount+1)){
+        printf("Invalid Position");
         return;
     }
-    else if(iPos == 1){
-        this->InsertFirst(iNo);
+
+    if(iPos == 1){
+        InsertFirst(iNo);
     }
     else if(iPos == iCount+1){
-        this->InsertLast(iNo);
+        InsertLast(iNo);
     }
     else{
-        temp = this->first;
-        newn = new NODE;
+        temp = first;
+
+        newn = (PNODE)malloc(sizeof(NODE));
         newn->data = iNo;
         newn->next = NULL;
 
         for(i=1;i<iPos-1;i++){
             temp = temp->next;
         }
-        newn->next=temp->next;
-        temp->next=newn;
-
+        newn->next = temp->next;
+        temp->next = newn;
         this->iCount++;
     }
+
 }
 
-void SinglyLL::DeleteFirst(){
+void singlyCL::DeleteFirst(){
     PNODE temp = NULL;
-    if(this->first == NULL){
+    if(NULL == first && NULL == last){
         cout<<"LL is empty"<<endl;
         return;
     }
     else if(this->first->next == NULL){
         delete this->first;
         this->first = NULL;
+        this->last = NULL;
     }
     else{
         temp = this->first;
@@ -134,44 +142,46 @@ void SinglyLL::DeleteFirst(){
     this->iCount--;
 }
 
-void SinglyLL::DeleteLast(){
+void singlyCL::DeleteLast(){
     PNODE temp = NULL;
-    if(this->first == NULL){
-        cout<<"LL is empty"<<endl;
+    if(NULL == first && NULL == last){
+        printf("LL is empty\n");
         return;
     }
-    else if(this->first->next == NULL){
-        delete (this->first);
-        this->first = NULL;
+    else if(first == last){
+        delete first;
+        first = NULL;
+        last = NULL;
     }
     else{
-        temp = this->first;
-        while(temp->next->next!=NULL){
+        temp = first;
+        while(temp->next != last){
             temp = temp->next;
         }
-        delete temp->next;
-        temp->next = NULL;
+        delete last;
+        last= temp;
+        last->next = first;
     }
-    this->iCount--;
 }
 
-void SinglyLL::DeleteAtPos(int iPos){
-    int i = 0;
+void singlyCL::DeleteAtPos(int iPos){
     PNODE temp = NULL;
     PNODE target = NULL;
-  
-    if((iPos<1) || (iPos>iCount)){
-        cout<<"Invalid Position\n";
+    int i = 0;
+
+    if((iPos<1) && (iPos>iCount)){
+        printf("Invalid Position");
         return;
     }
-    else if(iPos == 1){
-        this->DeleteFirst();
+
+    if(iPos == 1){
+        DeleteFirst();
     }
-    else if(iPos == iCount+1){
-        this->DeleteLast();
+    else if(iPos == iCount){
+        DeleteLast();
     }
     else{
-        temp = this->first;
+        temp = first;
 
         for(i=1;i<iPos-1;i++){
             temp = temp->next;
@@ -179,60 +189,47 @@ void SinglyLL::DeleteAtPos(int iPos){
         target = temp->next;
         temp->next = target->next;
         delete target;
-
         this->iCount--;
     }
 }
 
-
 int main(){
-    SinglyLL sobj;
+    singlyCL sobj;
     int iRet = 0;
 
     sobj.InsertFirst(51);
     sobj.InsertFirst(21);
     sobj.InsertFirst(11);
 
-    sobj.Display();
-    iRet = sobj.Count();
-
-    cout<<"No. of elements : "<<iRet<<endl;
-
     sobj.InsertLast(101);
     sobj.InsertLast(111);
     sobj.InsertLast(121);
 
     sobj.Display();
-    iRet = sobj.Count();
 
+    iRet = sobj.Count();
     cout<<"No. of elements : "<<iRet<<endl;
 
     sobj.DeleteFirst();
-
-    sobj.Display();
-    iRet = sobj.Count();
-
-    cout<<"No. of elements : "<<iRet<<endl;
-
     sobj.DeleteLast();
 
     sobj.Display();
-    iRet = sobj.Count();
 
+    iRet = sobj.Count();
     cout<<"No. of elements : "<<iRet<<endl;
 
-    sobj.InsertAtPos(105,4);
+    sobj.InsertAtPos(105,3);
 
     sobj.Display();
-    iRet = sobj.Count();
 
+    iRet = sobj.Count();
     cout<<"No. of elements : "<<iRet<<endl;
 
-    sobj.DeleteAtPos(4);
+    sobj.DeleteAtPos(3);
 
     sobj.Display();
-    iRet = sobj.Count();
 
+    iRet = sobj.Count();
     cout<<"No. of elements : "<<iRet<<endl;
 
     return 0;

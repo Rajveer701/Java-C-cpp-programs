@@ -6,108 +6,110 @@ using namespace std;
 struct node{
     int data;
     struct node *next;
-    struct node *prev;
 };
 
 typedef struct node NODE;
 typedef struct node * PNODE;
-typedef struct node ** PPNODE;
 
-class DoublyLL{
-    //Abstraction
+class singlyCL{
     private:
         PNODE first;
-        int iCount;
-
+        PNODE last;
+        int iCount = 0;
     public:
-        DoublyLL();
+        singlyCL();
+        
         void Display();
         int Count();
+
         void InsertFirst(int iNo);
         void InsertLast(int iNo);
         void InsertAtPos(int iNo,int iPos);
+
         void DeleteFirst();
         void DeleteLast();
         void DeleteAtPos(int iPos);
 };
 
-DoublyLL::DoublyLL(){
+singlyCL::singlyCL(){
     this->first = NULL;
+    this->last = NULL;
     this->iCount = 0;
 }
 
-void DoublyLL::Display(){
+void singlyCL::Display(){
     PNODE temp = NULL;
-    temp = this->first;
-    
-    while(temp!=NULL){
+    if(first == NULL && last == NULL){
+        return;
+    }
+    temp = first;
+    do{
         cout<<"| "<<temp->data<<" | -> ";
         temp = temp->next;
-    }
-    cout<<"NULL"<<endl;
+    }while(last->next != temp);
+    cout<<"\n";
 }
 
-int DoublyLL::Count(){
+int singlyCL::Count(){
     return this->iCount;
 }
 
-void DoublyLL::InsertFirst(int iNo){
+void singlyCL::InsertFirst(int iNo){
     PNODE newn = NULL;
     newn = new NODE;
     newn->data = iNo;
     newn->next = NULL;
-    newn->prev = NULL;
 
-    if(NULL == this->first){
-        this->first = newn;
+    if(first == NULL && last == NULL){
+        first = newn;
+        last = newn; 
     }
     else{
-       newn->next = this->first;
-       this->first->prev = NULL;
-       this->first = newn;
+        newn->next = first;
+        first = newn;
+        last->next = first;
     }
-    this->iCount++;     
+    iCount++;
 }
-void DoublyLL::InsertLast(int iNo){
-    PNODE newn = NULL;
+
+void singlyCL::InsertLast(int iNo){
+     PNODE newn = NULL;
+    newn = new NODE;
+    newn->data = iNo;
+    newn->next = NULL;
+
+    if(first == NULL && last == NULL){
+        first = newn;
+        last = newn; 
+    }
+    else{
+       last->next = newn;
+       last = newn;
+       last->next = first;
+    }
+    iCount++;
+}
+
+void singlyCL::InsertAtPos(int iNo,int iPos){
     PNODE temp = NULL;
-    newn = new NODE;
-    newn->data = iNo;
-    newn->next = NULL;
-    newn->prev = NULL;
-
-    if(NULL == this->first){
-        this->first = newn;
-    }
-    else{
-        temp=this->first;
-        while(temp->next!=NULL){
-            temp=temp->next;
-        }
-        temp->next=newn;
-        newn->prev=temp;
-    }
-    this->iCount++;  
-}
-
-void DoublyLL::InsertAtPos(int iNo,int iPos){
+    PNODE newn = NULL;
     int i = 0;
-    PNODE temp = NULL;
-    PNODE newn = NULL;
-    
-    if((iPos<1) || (iPos>iCount+1)){
-        cout<<"Invalid Position\n";
+
+    if((iPos<1) && (iPos>iCount+1)){
+        printf("Invalid Position");
         return;
     }
-    else if(iPos == 1){
-        this->InsertFirst(iNo);
+
+    if(iPos == 1){
+        InsertFirst(iNo);
     }
     else if(iPos == iCount+1){
-        this->InsertLast(iNo);
+        InsertLast(iNo);
     }
     else{
-        temp = this->first;
-        newn = new NODE;
+        temp = first;
+
+        newn = (PNODE)malloc(sizeof(NODE));
         newn->data = iNo;
         newn->next = NULL;
 
@@ -115,85 +117,84 @@ void DoublyLL::InsertAtPos(int iNo,int iPos){
             temp = temp->next;
         }
         newn->next = temp->next;
-        temp->next->prev = newn;    //$
         temp->next = newn;
-        newn->prev = temp;          //$
-
         this->iCount++;
     }
+
 }
 
-void DoublyLL::DeleteFirst(){
+void singlyCL::DeleteFirst(){
     PNODE temp = NULL;
-    if(this->first == NULL){
+    if(NULL == first && NULL == last){
         cout<<"LL is empty"<<endl;
         return;
     }
     else if(this->first->next == NULL){
         delete this->first;
         this->first = NULL;
+        this->last = NULL;
     }
     else{
         temp = this->first;
         this->first = this->first->next;
-        delete this->first->prev;
-        this->first->prev = NULL;
         delete temp;
     }
     this->iCount--;
 }
-void DoublyLL::DeleteLast(){
+
+void singlyCL::DeleteLast(){
     PNODE temp = NULL;
-    if(this->first == NULL){
-        cout<<"LL is empty"<<endl;
+    if(NULL == first && NULL == last){
+        printf("LL is empty\n");
         return;
     }
-    else if(this->first->next == NULL){
-        delete this->first;
-        this->first = NULL;
+    else if(first == last){
+        delete first;
+        first = NULL;
+        last = NULL;
     }
     else{
-        temp = this->first;
-        while(temp->next->next!=NULL){
+        temp = first;
+        while(temp->next != last){
             temp = temp->next;
         }
-        free(temp->next);
-        temp->next = NULL;
+        delete last;
+        last= temp;
+        last->next = first;
     }
-    this->iCount--;
 }
 
-void DoublyLL::DeleteAtPos(int iPos){
-    int i = 0;
+void singlyCL::DeleteAtPos(int iPos){
     PNODE temp = NULL;
-  
-    if((iPos<1) || (iPos>iCount)){
-        cout<<"Invalid Position\n";
+    PNODE target = NULL;
+    int i = 0;
+
+    if((iPos<1) && (iPos>iCount)){
+        printf("Invalid Position");
         return;
     }
-    else if(iPos == 1){
-        this->DeleteFirst();
+
+    if(iPos == 1){
+        DeleteFirst();
     }
-    else if(iPos == iCount+1){
-        this->DeleteLast();
+    else if(iPos == iCount){
+        DeleteLast();
     }
     else{
-        temp = this->first;
+        temp = first;
 
         for(i=1;i<iPos-1;i++){
             temp = temp->next;
         }
-        temp->next = temp->next->next;
-        free(temp->next->prev);     //$
-        temp->next->prev = temp;    //$
-
+        target = temp->next;
+        temp->next = target->next;
+        delete target;
         this->iCount--;
     }
 }
 
-
 int main(){
-    DoublyLL dobj;
+    singlyCL sobj;
     int iChoice = 0;
     int iValue = 0;
     int iRet = 0;
@@ -219,43 +220,42 @@ int main(){
             case 1 : 
                 cout<<"Enter the value\n";
                 cin>>iValue;
-                dobj.InsertFirst(iValue);
+                sobj.InsertFirst(iValue);
                 break;
             case 2 : 
                 cout<<"Enter the value\n";
                 cin>>iValue;
-                dobj.InsertLast(iValue);
+                sobj.InsertLast(iValue);
                 break;
             case 3 : 
                 cout<<"Enter the value\n";
                 cin>>iValue;
                 cout<<"Enter the position\n";
                 cin>>iPosition;
-                dobj.InsertAtPos(iValue,iPosition);
+                sobj.InsertAtPos(iValue,iPosition);
                 break;
             case 4 : 
-                dobj.DeleteFirst();
+                sobj.DeleteFirst();
                 break;
             case 5 : 
-                dobj.DeleteLast();
+                sobj.DeleteLast();
                 break;
             case 6 : 
                 cout<<"Enter the position\n";
                 cin>>iPosition;
-                dobj.DeleteAtPos(iPosition);
+                sobj.DeleteAtPos(iPosition);
                 break;
             case 7 : 
                 cout<<"Elements of the LL are : \n";
-                dobj.Display();
+                sobj.Display();
                 break;
             case 8 : 
-                iRet = dobj.Count();
+                iRet = sobj.Count();
                 cout<<"Number of elements : "<<iRet<<endl;
                 break;
             case 9 :
                 cout<<"Thank you for using\n";
                 break;
-
             default:
                 cout<<"Invalid choice\n";
         }

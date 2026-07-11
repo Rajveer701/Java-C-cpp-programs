@@ -201,8 +201,8 @@ int main(){
         cout<<"2 : Insert node at last position\n";
         cout<<"3 : Insert node at given position\n";
         cout<<"4 : Delete node at first position\n";
-        cout<<"5 : Delete node at first position\n";
-        cout<<"6 : Delete node at first position\n";
+        cout<<"5 : Delete node at last position\n";
+        cout<<"6 : Delete node at given position\n";
         cout<<"7 : Display the elements \n";
         cout<<"8 : Count the number of elements \n";
         cout<<"9 : Terminate the application\n";

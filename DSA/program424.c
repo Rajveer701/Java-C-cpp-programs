@@ -76,7 +76,6 @@ void InsertAtPos(PPNODE first,PPNODE last,int iNo,int iPos){
 }
 
 void DeleteFirst(PPNODE first,PPNODE last){
-    PNODE temp = NULL;
     if(NULL == *first && NULL == *last){
         printf("LL is empty\n");
         return;
@@ -87,7 +86,6 @@ void DeleteFirst(PPNODE first,PPNODE last){
         *last = NULL;
     }
     else{
-        temp = *first;
         *first = (*first)->next;
         free((*last)->next);
         (*last)->next = *first;  //imp

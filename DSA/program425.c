@@ -76,6 +76,23 @@ void InsertAtPos(PPNODE first,PPNODE last,int iNo,int iPos){
 }
 
 void DeleteFirst(PPNODE first,PPNODE last){
+    if(NULL == *first && NULL == *last){
+        printf("LL is empty\n");
+        return;
+    }
+    else if(*first == *last){
+        free(*first);
+        *first = NULL;
+        *last = NULL;
+    }
+    else{
+        *first = (*first)->next;
+        free((*last)->next);
+        (*last)->next = *first;  //imp
+    }
+}
+
+void DeleteLast(PPNODE first,PPNODE last){
     PNODE temp = NULL;
     if(NULL == *first && NULL == *last){
         printf("LL is empty\n");
@@ -88,24 +105,12 @@ void DeleteFirst(PPNODE first,PPNODE last){
     }
     else{
         temp = *first;
-        *first = (*first)->next;
-        free((*last)->next);
+        while(temp->next != *last){
+            temp = temp->next;
+        }
+        free(*last);             //free(temp->next)
+        *last = temp;
         (*last)->next = *first;  //imp
-    }
-}
-
-void DeleteLast(PPNODE first,PPNODE last){
-    if(NULL == *first && NULL == *last){
-        printf("LL is empty\n");
-        return;
-    }
-    else if(*first == *last){
-        free(*first);
-        *first = NULL;
-        *last = NULL;
-    }
-    else{
-
     }
 }
 
@@ -134,7 +139,15 @@ int main(){
 
     DeleteFirst(&head,&tail);
 
-     Display(head,tail);
+    Display(head,tail);
+
+    iRet = Count(head,tail);
+
+    printf("No. of elements : %d\n",iRet);
+
+    DeleteLast(&head,&tail);
+
+    Display(head,tail);
 
     iRet = Count(head,tail);
 

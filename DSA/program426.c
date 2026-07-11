@@ -72,10 +72,56 @@ void InsertLast(PPNODE first,PPNODE last,int iNo){
 }
 
 void InsertAtPos(PPNODE first,PPNODE last,int iNo,int iPos){
+    PNODE temp = NULL;
+    PNODE newn = NULL;
+    int iCount = 0;
+    iCount = Count(*first,*last);
+    int i = 0;
 
+    if((iPos<1) && (iPos>iCount+1)){
+        printf("Invalid Position");
+        return;
+    }
+
+    if(iPos == 1){
+        InsertFirst(first,last,iNo);
+    }
+    else if(iPos == iCount+1){
+        InsertLast(first,last,iNo);
+    }
+    else{
+        temp = *first;
+
+        newn = (PNODE)malloc(sizeof(NODE));
+        newn->data = iNo;
+        newn->next = NULL;
+
+        for(i=1;i<iPos-1;i++){
+            temp = temp->next;
+        }
+        newn->next = temp->next;
+        temp->next = newn;
+    }
 }
 
 void DeleteFirst(PPNODE first,PPNODE last){
+    if(NULL == *first && NULL == *last){
+        printf("LL is empty\n");
+        return;
+    }
+    else if(*first == *last){
+        free(*first);
+        *first = NULL;
+        *last = NULL;
+    }
+    else{
+        *first = (*first)->next;
+        free((*last)->next);
+        (*last)->next = *first;  //imp
+    }
+}
+
+void DeleteLast(PPNODE first,PPNODE last){
     PNODE temp = NULL;
     if(NULL == *first && NULL == *last){
         printf("LL is empty\n");
@@ -88,24 +134,12 @@ void DeleteFirst(PPNODE first,PPNODE last){
     }
     else{
         temp = *first;
-        *first = (*first)->next;
-        free((*last)->next);
+        while(temp->next != *last){
+            temp = temp->next;
+        }
+        free(*last);             //free(temp->next)
+        *last = temp;
         (*last)->next = *first;  //imp
-    }
-}
-
-void DeleteLast(PPNODE first,PPNODE last){
-    if(NULL == *first && NULL == *last){
-        printf("LL is empty\n");
-        return;
-    }
-    else if(*first == *last){
-        free(*first);
-        *first = NULL;
-        *last = NULL;
-    }
-    else{
-
     }
 }
 
@@ -134,7 +168,23 @@ int main(){
 
     DeleteFirst(&head,&tail);
 
-     Display(head,tail);
+    Display(head,tail);
+
+    iRet = Count(head,tail);
+
+    printf("No. of elements : %d\n",iRet);
+
+    DeleteLast(&head,&tail);
+
+    Display(head,tail);
+
+    iRet = Count(head,tail);
+
+    printf("No. of elements : %d\n",iRet);
+
+    InsertAtPos(&head,&tail,105,4);
+
+    Display(head,tail);
 
     iRet = Count(head,tail);
 
