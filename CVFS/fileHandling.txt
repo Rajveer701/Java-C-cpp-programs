@@ -1,0 +1,9 @@
+Project --> CVFS(based on Linux System Programming)
+
+Hard Disk
+1.Bootblock - BB  --> boots/starts the OS
+2.Superblock - SB   --> stores info of whole hardisk
+3.Disk iNode List Block - DILB  --> stores info of all files
+4.Data Block - DB   --> 
+
+uArea(accessed by Kernel) --> UFDT(User File Descriptor Table) --> FT(File Table) --> IIT (Input iNode Table) 
