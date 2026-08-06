@@ -173,7 +173,7 @@ void InitialiseUREA(){
 //
 // Function Name :      IntialiseSuperBlock()
 // Description :        It is used to intialise Super Block
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput 
 // Date :               31/07/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +189,7 @@ void IntialiseSuperBlock(){
 //
 // Function Name :      CreateDILB()
 // Description :        It is used to create linked list of Inodes
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput
 // Date :               31/07/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -232,7 +232,7 @@ void CreateDILB(){
 // Function Name :      StartAuxillaryDataInitialisation()
 // Description :        It is used to call all such func 
 //                      which are used to initialise auxillary data
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput
 // Date :               31/07/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -253,7 +253,7 @@ void StartAuxillaryDataInitialisation(){
 // Function Name :      DisplayHelp()
 // Description :        It is used to display help 
 //                      to the user of project
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput
 // Date :               1/08/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -285,7 +285,7 @@ void DisplayHelp(){
 // Description :        It is used to display man page
 //                      of specific command
 // Input :              Name of Command
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput
 // Date :               1/08/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -306,6 +306,28 @@ void ManPageDisplay(char Name[]){
         printf("About : It is used to clear the terminal\n");
         printf("Usage : clear\n");
     }
+    //Marvellous CVFS : > creat
+    else if(strcmp(Name,"creat") == 0){
+        printf("About : It is used to create new file\n");
+        printf("Usage : creat File_name Permission\n");
+        printf("File_name : Name of file that we want to create\n");
+        printf("Permission : Permission of the new file\n");
+        printf("Permission : Read -> 1\n"); 
+        printf("Permission : Write -> 2\n"); 
+        printf("Permission : Read + Write -> 3\n"); 
+    }
+    //Marvellous CVFS : > unlink
+    else if(strcmp(Name,"unlink") == 0){
+        printf("About : It is used to delete existing file\n");
+        printf("Usage : unlink File_name\n");
+        printf("File_name : Name of file that we want to delete\n");
+    }
+    //Marvellous CVFS : > stat
+    else if(strcmp(Name,"stat") == 0){
+        printf("About : It is used to get information of file\n");
+        printf("Usage : stat File_name\n");
+        printf("File_name : Name of file whose information we want to display\n");
+    }
     else{
         printf("No manual entry found for %s\n",Name);
     }
@@ -319,7 +341,7 @@ void ManPageDisplay(char Name[]){
 // Input :              Name of File
 // Output :             True if present
 //                      False if not present
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput
 // Date :               1/08/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -348,7 +370,7 @@ bool IsFileExist(
 // Description :        It is used to create a new file      
 // Input :              Name of File & Permissions
 // Output :             File Descriptor
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput
 // Date :               1/08/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -445,7 +467,7 @@ int CreateFile(
 //                      of all files
 // Input :              None
 // Output :             None
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput
 // Date :               1/08/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -473,7 +495,7 @@ void LsFile(){
 //                      details of all files
 // Input :              None
 // Output :             None
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput
 // Date :               2/08/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -497,15 +519,202 @@ void LsFile_All(){
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
+// Function Name :      stat_file()
+// Description :        It is used to display  
+//                      all details of specific file
+// Input :              File Name
+// Output :             Exit status of the function
+// Author :             Rajveer Dharmendrasingh Rajput
+// Date :               2/08/2026
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int stat_file(char name[]){
+    PINODE temp = NULL;
+    int Permission = 0;
+    int Type = 0;
+
+    if(IsFileExist(name) == false){
+        return ERR_FILE_NOT_EXIST;
+    }
+
+    temp = head;
+
+    while(temp!=NULL){
+        if(strcmp(temp->FileName,name) == 0){
+            printf("----------------------------------------------\n");
+            printf("------- Statistical Information of File ------\n");
+            printf("----------------------------------------------\n");
+
+            //Logic
+            printf("File Name : %s\n",temp->FileName);
+
+            printf("Inode number : %d\n",temp->InodeNumber);
+
+            printf("File Size : %d\n",temp->FileSize);
+
+            printf("Actual File Size : %d\n",temp->ActualFileSize);
+
+            printf("Refernce Count : %d\n",temp->RefernceCount);
+
+            Permission = temp->Permission;
+
+            if(Permission == READ){
+                printf("File Permission : Read Only \n");
+            }
+            else if(Permission == WRITE){
+                printf("File Permission : Write Only \n");
+            }
+            else if(Permission == READ + WRITE){
+                printf("File Permission : Read + Write \n");
+            }
+
+            Type = temp->FileType;
+
+            if(Type == REGULARFILE){
+                printf("File Type : Regular File \n");
+            }
+            else if(Type == SPECIALFILE){
+                printf("File Type : Special File \n");
+            }
+
+            printf("----------------------------------------------\n");
+            
+            break;
+        }
+        temp = temp->next;
+    }
+    return EXECUTE_SUCCESS;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Function Name :      unlink_file()
+// Description :        It is used to delete  
+//                      a specific file
+// Input :              File Name
+// Output :             Exit status of the function
+// Author :             Rajveer Dharmendrasingh Rajput
+// Date :               2/08/2026
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int unlink_file(
+        char name[])           // name of file
+{   
+    int i = 0;
+
+    if(IsFileExist(name) == false){
+        return ERR_FILE_NOT_EXIST;
+    }
+
+    // Travel UFDT
+
+    for(i=0;i<MAXOPENFILES;i++){
+        if(uareaobj.UFDT[i] != NULL){
+            if(strcmp(uareaobj.UFDT[i]->ptrInode->FileName,name) == 0){
+                
+                //Deallocate memory of Buffer
+                free(uareaobj.UFDT[i]->ptrInode->Buffer);
+                uareaobj.UFDT[i]->ptrInode->Buffer = NULL;
+
+                strcpy(uareaobj.UFDT[i]->ptrInode->FileName,"\0");
+                
+                uareaobj.UFDT[i]->ptrInode->FileSize = 0;
+                uareaobj.UFDT[i]->ptrInode->ActualFileSize = 0;
+                uareaobj.UFDT[i]->ptrInode->FileType = 0;
+                uareaobj.UFDT[i]->ptrInode->Permission = 0;
+                uareaobj.UFDT[i]->ptrInode->RefernceCount = 0;
+
+                // Deallocate memory of File Table
+                free(uareaobj.UFDT[i]);
+
+                uareaobj.UFDT[i] = NULL;
+
+                superobj.FreeInodes++;
+
+                printf("%s deleted successfully\n",name);
+
+                break;  //imp
+
+            }   // End of if 
+        }   // End of if 
+    }   // End of for 
+
+    return EXECUTE_SUCCESS;
+}   // End of unlink_file func
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Function Name :      write_file()
+// Description :        It is used to write the data  
+//                      into a specific file
+// Input :              File Desciptor, Data that we want to write, Size of Data
+// Output :             Number of bytes successfully written
+// Author :             Rajveer Dharmendrasingh Rajput
+// Date :               2/08/2026
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int write_file(
+    int fd,         // file descriptor
+    char *data,     // data to be written in file
+    int size        // size of data
+    )
+{
+    printf("File Descriptor : %d\n",fd);
+    printf("Data we wnt to write : %s\n",data);
+    printf("Size of Data : %d\n",size);
+
+    // If fd is invalid
+    if(fd < 0 || fd > MAXOPENFILES){
+        return ERR_INVALID_PARAMETER;
+    }
+
+    // If Writing permission is not there
+    if(uareaobj.UFDT[fd]->ptrInode->Permission < WRITE ){       // < 2
+        return ERR_PERMISSION_DENIED;
+    }   
+    
+    // Check if space is there or not
+    if((MAXFILESIZE - uareaobj.UFDT[fd]->WriteOffset) < size){
+        return ERR_INSUFFICENT_SPACE;
+    }
+
+    //offset = uareaobj.UFDT[fd]->ptrInode->Buffer + uareaobj.UFDT[fd]->WriteOffset;
+
+    // Actual data writing
+    strncpy(uareaobj.UFDT[fd]->ptrInode->Buffer + uareaobj.UFDT[fd]->WriteOffset,data,size);
+
+    // Update the write offset
+    uareaobj.UFDT[fd]->WriteOffset = uareaobj.UFDT[fd]->WriteOffset + size;
+
+    // Update actual file size
+    uareaobj.UFDT[fd]->ptrInode->ActualFileSize = uareaobj.UFDT[fd]->ptrInode->ActualFileSize + size;
+
+    return size;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
 // Entry point function of CVFS project
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main(){
+    // Input Command
     char str[80] = {'\0'};
+
+    // Tokenised Command
     char Command[5][20] = {{'\0'}};
 
+    // Data for write system call
+    char InputBuffer[MAXFILESIZE] = {'\0'};
+
     int iRet = 0,iCount = 0;
+    
+    int size = 0;
 
     StartAuxillaryDataInitialisation();
 
@@ -564,6 +773,46 @@ int main(){
             //Marvellous CVFS : > ls -a
             else if((strcmp(Command[0],"ls") == 0) && (strcmp(Command[1],"-a") == 0)){
                 LsFile_All();
+            }
+            //Marvellous CVFS : > stat filename(stat Ganesh.txt)
+            else if(strcmp(Command[0],"stat") == 0){
+                iRet = stat_file(Command[1]);
+                if(iRet == ERR_FILE_NOT_EXIST){
+                    printf("Error : File does not exist\n");
+                }
+            }
+            //Marvellous CVFS : > unlink filename(unlink Ganesh.txt)
+            else if(strcmp(Command[0],"unlink") == 0){
+                iRet = unlink_file(Command[1]);
+                if(iRet == ERR_FILE_NOT_EXIST){
+                    printf("Error : File does not exist\n");
+                }
+            }
+            //Marvellous CVFS : > write 1 
+            else if(strcmp(Command[0],"write") == 0){
+                printf("Enter the data that you want to write into the file : \n");
+                fgets(InputBuffer,MAXFILESIZE,stdin);           // stdin -> keyboard
+
+                size = strlen(InputBuffer); 
+
+                iRet = write_file(atoi(Command[1]),InputBuffer,size-1);
+                if(iRet == ERR_INVALID_PARAMETER){
+                    printf("Error : Invalid Paramter\n");
+                    printf("Please refer help option to get more information\n");
+                    printf("Please refer manual page of command using man\n");
+                }
+                else if(iRet == ERR_FILE_NOT_EXIST){
+                    printf("Error : File does not exist\n");
+                }
+                else if(iRet == ERR_PERMISSION_DENIED){
+                    printf("Error : There is no permission to write data into this file\n");
+                }
+                else if(iRet == ERR_INSUFFICENT_SPACE){
+                    printf("Error : There is no space to write the data into this file\n");
+                }
+                else{
+                    printf("%d bytes get successfully written into the file \n",iRet);
+                }
             }
             else{
                 printf("Command not found\n");

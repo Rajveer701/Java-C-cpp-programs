@@ -173,7 +173,7 @@ void InitialiseUREA(){
 //
 // Function Name :      IntialiseSuperBlock()
 // Description :        It is used to intialise Super Block
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput 
 // Date :               31/07/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +189,7 @@ void IntialiseSuperBlock(){
 //
 // Function Name :      CreateDILB()
 // Description :        It is used to create linked list of Inodes
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput
 // Date :               31/07/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -232,7 +232,7 @@ void CreateDILB(){
 // Function Name :      StartAuxillaryDataInitialisation()
 // Description :        It is used to call all such func 
 //                      which are used to initialise auxillary data
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput
 // Date :               31/07/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -253,7 +253,7 @@ void StartAuxillaryDataInitialisation(){
 // Function Name :      DisplayHelp()
 // Description :        It is used to display help 
 //                      to the user of project
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput
 // Date :               1/08/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -285,7 +285,7 @@ void DisplayHelp(){
 // Description :        It is used to display man page
 //                      of specific command
 // Input :              Name of Command
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput
 // Date :               1/08/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -319,7 +319,7 @@ void ManPageDisplay(char Name[]){
 // Input :              Name of File
 // Output :             True if present
 //                      False if not present
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput
 // Date :               1/08/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -348,7 +348,7 @@ bool IsFileExist(
 // Description :        It is used to create a new file      
 // Input :              Name of File & Permissions
 // Output :             File Descriptor
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput
 // Date :               1/08/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -445,7 +445,7 @@ int CreateFile(
 //                      of all files
 // Input :              None
 // Output :             None
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput
 // Date :               1/08/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -473,7 +473,7 @@ void LsFile(){
 //                      details of all files
 // Input :              None
 // Output :             None
-// Author :             Rajveer Rajput
+// Author :             Rajveer Dharmendrasingh Rajput
 // Date :               2/08/2026
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -494,6 +494,133 @@ void LsFile_All(){
         temp = temp->next;
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Function Name :      stat_file()
+// Description :        It is used to display  
+//                      all details of specific file
+// Input :              File Name
+// Output :             Exit status of the function
+// Author :             Rajveer Dharmendrasingh Rajput
+// Date :               2/08/2026
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int stat_file(char name[]){
+    PINODE temp = NULL;
+    int Permission = 0;
+    int Type = 0;
+
+    if(IsFileExist(name) == false){
+        return ERR_FILE_NOT_EXIST;
+    }
+
+    temp = head;
+
+    while(temp!=NULL){
+        if(strcmp(temp->FileName,name) == 0){
+            printf("----------------------------------------------\n");
+            printf("------- Statistical Information of File ------\n");
+            printf("----------------------------------------------\n");
+
+            //Logic
+            printf("File Name : %s\n",temp->FileName);
+
+            printf("Inode number : %d\n",temp->InodeNumber);
+
+            printf("File Size : %d\n",temp->FileSize);
+
+            printf("Actual File Size : %d\n",temp->ActualFileSize);
+
+            printf("Refernce Count : %d\n",temp->RefernceCount);
+
+            Permission = temp->Permission;
+
+            if(Permission == READ){
+                printf("File Permission : Read Only \n");
+            }
+            else if(Permission == WRITE){
+                printf("File Permission : Write Only \n");
+            }
+            else if(Permission == READ + WRITE){
+                printf("File Permission : Read + Write \n");
+            }
+
+            Type = temp->FileType;
+
+            if(Type == REGULARFILE){
+                printf("File Type : Regular File \n");
+            }
+            else if(Type == SPECIALFILE){
+                printf("File Type : Special File \n");
+            }
+
+            printf("----------------------------------------------\n");
+            
+            break;
+        }
+        temp = temp->next;
+    }
+    return EXECUTE_SUCCESS;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Function Name :      unlink_file()
+// Description :        It is used to delete  
+//                      a specific file
+// Input :              File Name
+// Output :             Exit status of the function
+// Author :             Rajveer Dharmendrasingh Rajput
+// Date :               2/08/2026
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int unlink_file(
+        char name[])           // name of file
+{   
+    int i = 0;
+
+    if(IsFileExist(name) == false){
+        return ERR_FILE_NOT_EXIST;
+    }
+
+    // Travel UFDT
+
+    for(i=0;i<MAXOPENFILES;i++){
+        if(uareaobj.UFDT[i] != NULL){
+            if(strcmp(uareaobj.UFDT[i]->ptrInode->FileName,name) == 0){
+                
+                //Deallocate memory of Buffer
+                free(uareaobj.UFDT[i]->ptrInode->Buffer);
+                uareaobj.UFDT[i]->ptrInode->Buffer = NULL;
+
+                strcpy(uareaobj.UFDT[i]->ptrInode->FileName,"\0");
+                
+                uareaobj.UFDT[i]->ptrInode->FileSize = 0;
+                uareaobj.UFDT[i]->ptrInode->ActualFileSize = 0;
+                uareaobj.UFDT[i]->ptrInode->FileType = 0;
+                uareaobj.UFDT[i]->ptrInode->Permission = 0;
+                uareaobj.UFDT[i]->ptrInode->RefernceCount = 0;
+
+                // Deallocate memory of File Table
+                free(uareaobj.UFDT[i]);
+
+                uareaobj.UFDT[i] = NULL;
+
+                superobj.FreeInodes++;
+
+                printf("%s deleted successfully\n",name);
+
+                break;  //imp
+
+            }   // End of if 
+        }   // End of if 
+    }   // End of for 
+
+    return EXECUTE_SUCCESS;
+}   // End of unlink_file func
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -564,6 +691,20 @@ int main(){
             //Marvellous CVFS : > ls -a
             else if((strcmp(Command[0],"ls") == 0) && (strcmp(Command[1],"-a") == 0)){
                 LsFile_All();
+            }
+            //Marvellous CVFS : > stat filename(stat Ganesh.txt)
+            else if(strcmp(Command[0],"stat") == 0){
+                iRet = stat_file(Command[1]);
+                if(iRet == ERR_FILE_NOT_EXIST){
+                    printf("Error : File does not exist\n");
+                }
+            }
+            //Marvellous CVFS : > unlink filename(unlink Ganesh.txt)
+            else if(strcmp(Command[0],"unlink") == 0){
+                iRet = unlink_file(Command[1]);
+                if(iRet == ERR_FILE_NOT_EXIST){
+                    printf("Error : File does not exist\n");
+                }
             }
             else{
                 printf("Command not found\n");
