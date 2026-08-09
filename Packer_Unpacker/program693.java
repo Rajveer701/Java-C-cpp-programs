@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-class program691{
+class program693{
     public static void main(String A[]) throws Exception
     {
         Scanner sobj = new Scanner(System.in);
@@ -37,6 +37,16 @@ class program691{
             for(int i=0;i<fArr.length;i++){
                 fiobj = new FileInputStream(fArr[i]);
 
+                // Write file name & size
+                String Header = "--------------------------------\n";
+                Header += "File Name : " + fArr[i].getName() + "\n";
+                Header += "File Size : " + fArr[i].length() + "\n";
+                Header += "--------------------------------\n";
+
+                foobj.write(Header.getBytes());
+
+                foobj.write("File Content : ".getBytes());
+
                 // loop to read from fiobj & write into foobj
 
                 byte Buffer[] = new byte[1024];
@@ -44,6 +54,7 @@ class program691{
                 while((iRet = fiobj.read(Buffer)) != -1){
                     foobj.write(Buffer,0,iRet);
                 }
+                foobj.write("\n\n".getBytes());
                 fiobj.close();
             }
             foobj.close();
@@ -51,6 +62,6 @@ class program691{
         else{
             System.out.println("There is no such folder");
         }
-
+        sobj.close();
     }
 }

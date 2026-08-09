@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-class program691{
+class program724{
     public static void main(String A[]) throws Exception
     {
         Scanner sobj = new Scanner(System.in);
@@ -10,6 +10,7 @@ class program691{
 
         String FolderName = null;
         String PackFileName = null;
+        String header = "";
 
         FileOutputStream foobj = null;
         FileInputStream fiobj = null;
@@ -34,23 +35,35 @@ class program691{
 
             System.out.println("Number of files in folder : " + fArr.length);
 
+            byte Buffer[] = new byte[1024];
+
             for(int i=0;i<fArr.length;i++){
                 fiobj = new FileInputStream(fArr[i]);
 
+                header = header + fArr[i].getName();
+                header = header + " ";
+                header = header + fArr[i].length();
+
+                System.out.println("Header is : " +header);
+
+                // Write file name & size
+                
+
                 // loop to read from fiobj & write into foobj
 
-                byte Buffer[] = new byte[1024];
-                 
-                while((iRet = fiobj.read(Buffer)) != -1){
-                    foobj.write(Buffer,0,iRet);
-                }
+                /*  while((iRet = fiobj.read(Buffer)) != -1){
+                        foobj.write(Buffer,0,iRet);
+                    }
+                */
+
                 fiobj.close();
+                header = "";
             }
             foobj.close();
         }
         else{
             System.out.println("There is no such folder");
         }
-
+        sobj.close();
     }
 }

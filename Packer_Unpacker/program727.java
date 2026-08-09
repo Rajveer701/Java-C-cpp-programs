@@ -1,15 +1,21 @@
 import java.io.*;
 import java.util.*;
 
-class program691{
+class program727 {
     public static void main(String A[]) throws Exception
     {
         Scanner sobj = new Scanner(System.in);
 
         int iRet = 0;
+        int Size = 0;
+        int i=0,j=0;
 
         String FolderName = null;
         String PackFileName = null;
+        String header = "";
+
+        byte Buffer[] = new byte[1024];
+        byte bHeader[] = null;
 
         FileOutputStream foobj = null;
         FileInputStream fiobj = null;
@@ -34,23 +40,41 @@ class program691{
 
             System.out.println("Number of files in folder : " + fArr.length);
 
-            for(int i=0;i<fArr.length;i++){
+            for(i=0;i<fArr.length;i++){
                 fiobj = new FileInputStream(fArr[i]);
+
+                header = header + fArr[i].getName();
+                header = header + " ";
+                header = header + fArr[i].length();
+
+                Size = 100-header.length();
+
+                for(j=1;j<=Size;j++){
+                    header = header + " ";
+                }
+
+                bHeader = header.getBytes();
+
+                // Write file name & size
+
+                foobj.write(bHeader);
+                
 
                 // loop to read from fiobj & write into foobj
 
-                byte Buffer[] = new byte[1024];
-                 
-                while((iRet = fiobj.read(Buffer)) != -1){
-                    foobj.write(Buffer,0,iRet);
-                }
+                /*  while((iRet = fiobj.read(Buffer)) != -1){
+                        foobj.write(Buffer,0,iRet);
+                    }
+                */
+
                 fiobj.close();
+                header = "";
             }
             foobj.close();
         }
         else{
             System.out.println("There is no such folder");
         }
-
+        sobj.close();
     }
 }
