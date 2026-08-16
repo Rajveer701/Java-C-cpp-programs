@@ -1,0 +1,29 @@
+// 5!
+// 5 * 4 * 3 * 2 * 1
+import java.io.*;
+
+class program805{
+    public static void main(String A[]) throws Exception
+    {
+        BufferedReader bobj = new BufferedReader(new InputStreamReader(System.in));
+
+        int iNo = 0;
+        int iFact = 0;
+        int i=0;
+
+        System.out.println("Enter number : ");
+        iNo = Integer.parseInt(bobj.readLine());
+
+        if(iNo<0){
+            System.out.println("Invalid Number.I/p must be positive");
+        }
+
+        iFact = 1; 
+
+        for(i=1;i<=iNo;i++){
+            iFact = iFact * i;
+        }
+
+        System.out.println("Factorial is : " + iFact);
+    }    
+}
