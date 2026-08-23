@@ -1,6 +1,6 @@
 import java.util.*;
 
-class program830{
+class program835{
     public static void main(String A[]) throws Exception
     {
         Scanner sobj = new Scanner(System.in);
@@ -12,6 +12,14 @@ class program830{
         aobj.add(51);
         aobj.add(101);
         aobj.add(51);
+        aobj.remove(4);
+        aobj.remove(3);
+
+        for(int No : aobj){
+            System.out.println(No);
+        }
+
+        aobj.clear();
 
         System.out.println(aobj);
     }  
