@@ -1,22 +1,21 @@
-// java program951.java programming
+// java program952.java programming
 
 import java.util.*;
 
-class program951 {
+class program952 {
     public static void main(String A[]){
+        LinkedHashMap <Character,Integer> frequency = new LinkedHashMap<Character,Integer>();
+
         if(A.length != 1){
             System.out.println("Invalid number of arguments");
             return;
         }
 
         String str = A[0];
-        TreeMap <Character,Integer> frequency = new TreeMap<Character,Integer>();
 
         for(char ch : str.toCharArray()){
             frequency.put(ch, frequency.getOrDefault(ch,0)+1);
         }
         System.out.println(frequency);
-
-        // issue in ordering
     }
 }
